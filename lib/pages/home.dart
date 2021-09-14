@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe_tto/services/payment-service.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -6,6 +7,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  onItemPress(BuildContext context, int index) async {
+    switch(index) {
+      case 0:
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/existing-cards');
+        break;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    StripeService.init();
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -33,7 +51,7 @@ class _HomePageState extends State<HomePage> {
 
               return InkWell(
                 onTap: () {
-
+                  onItemPress(context, index);
                 },
                 child: ListTile(
                   title: text,

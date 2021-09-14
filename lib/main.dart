@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe_tto/pages/existing-cards.dart';
 import 'package:flutter_stripe_tto/pages/home.dart';
+import 'package:flutter_stripe_tto/services/payment-service.dart';
 
 void main() {
+  StripeService.init();
   runApp(MyApp());
 }
 
@@ -24,6 +27,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomePage(),
+      routes: <String, WidgetBuilder> {
+        '/existing-cards': (BuildContext context) => ExistingCardsPage(key: new Key('ExistingCardPage'))
+      },
     );
   }
 }
