@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 final kApiUrl = defaultTargetPlatform == TargetPlatform.android
-    ? 'http://10.0.2.2:4242'
-    : 'http://localhost:4242';
+    ? 'http://10.0.2.2:5001/flutterstripe-8466f/us-central1/webApi'
+    : 'http://localhost:4000/webApi';
 
 class ExistingCardsPage extends StatefulWidget {
   ExistingCardsPage({required Key key}) : super(key: key);
@@ -18,7 +18,12 @@ class ExistingCardsPage extends StatefulWidget {
 }
 
 class ExistingCardsPageState extends State<ExistingCardsPage> {
-  CardDetails _card = CardDetails();
+  CardDetails _card = CardDetails(
+    number: '4242424242424242',
+    expirationMonth: 4,
+    expirationYear: 2024,
+    cvc: '042'
+  );
   bool? _saveCard = false;
   List cards = [{
     'cardNumber': '4242424242424242',
@@ -189,7 +194,8 @@ class ExistingCardsPageState extends State<ExistingCardsPage> {
                 children: [
                   Expanded(
                     flex: 2,
-                    child: TextField(
+                    child: TextFormField(
+                      initialValue: _card.number,
                       decoration: InputDecoration(hintText: 'Number'),
                       onChanged: (number) {
                         setState(() {
@@ -202,7 +208,8 @@ class ExistingCardsPageState extends State<ExistingCardsPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     width: 80,
-                    child: TextField(
+                    child: TextFormField(
+                      initialValue: _card.expirationYear.toString(),
                       decoration: InputDecoration(hintText: 'Exp. Year'),
                       onChanged: (number) {
                         setState(() {
@@ -216,7 +223,8 @@ class ExistingCardsPageState extends State<ExistingCardsPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     width: 80,
-                    child: TextField(
+                    child: TextFormField(
+                      initialValue: _card.expirationMonth.toString(),
                       decoration: InputDecoration(hintText: 'Exp. Month'),
                       onChanged: (number) {
                         setState(() {
@@ -230,7 +238,8 @@ class ExistingCardsPageState extends State<ExistingCardsPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     width: 80,
-                    child: TextField(
+                    child: TextFormField(
+                      initialValue: _card.cvc,
                       decoration: InputDecoration(hintText: 'CVC'),
                       onChanged: (number) {
                         setState(() {
