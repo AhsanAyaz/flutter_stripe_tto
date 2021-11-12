@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe_tto/services/payment-service.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,7 +21,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    StripeService.init();
   }
 
   @override
