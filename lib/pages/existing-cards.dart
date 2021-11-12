@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_credit_card/credit_card_widget.dart';
+import 'package:flutter_credit_card/credit_card_brand.dart';
+import 'package:flutter_credit_card/credit_card_form.dart';
+import 'package:flutter_credit_card/credit_card_model.dart';
+import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_stripe_tto/services/payment-service.dart';
 import 'package:http/http.dart' as http;
@@ -24,23 +27,31 @@ class ExistingCardsPageState extends State<ExistingCardsPage> {
     expirationYear: 2024,
     cvc: '042'
   );
-  bool? _saveCard = false;
-  List cards = [{
-    'cardNumber': '4242424242424242',
-    'expiryDate': '04/24',
-    'cardHolderName': 'Muhammad Ahsan Ayaz',
-    'cvvCode': '424',
-    'showBackView': false,
-  }, {
-    'cardNumber': '5555555566554444',
-    'expiryDate': '04/23',
-    'cardHolderName': 'Tracer',
-    'cvvCode': '123',
-    'showBackView': false,
-  }];
+  String cardNumber = '4242424242424242';
+  String expiryDate = '04/24';
+  String cardHolderName = 'Muhammad Ahsan Ayaz';
+  String cvvCode = '042';
+  bool useGlassMorphism = false;
+  bool useBackgroundImage = false;
+  OutlineInputBorder? border;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  List<CardDetails> cards = [
+    CardDetails(
+      number: '4242424242424242',
+      expirationMonth: 4,
+      expirationYear: 2024,
+      cvc: '042'
+    ),
+    CardDetails(
+    number: '5555555566554444',
+    expirationMonth: 4,
+    expirationYear: 2023,
+    cvc: '123'
+    ),
+   ];
 
-  Future<void> _handlePayPress() async {
-    await Stripe.instance.dangerouslyUpdateCardDetails(_card);
+  Future<void> _handlePayPress(CardDetails card) async {
+    await Stripe.instance.dangerouslyUpdateCardDetails(card);
 
     try {
       // 1. Gather customer billing information (ex. email)
@@ -175,102 +186,31 @@ class ExistingCardsPageState extends State<ExistingCardsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-                margin: EdgeInsets.all(16),
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                    'If you don\'t want to or can\'t rely on the CardField you'
-                        ' can use the dangerouslyUpdateCardDetails in combination with '
-                        'your own card field implementation. \n\n'
-                        'Please beware that this will potentially break PCI compliance: '
-                        'https://stripe.com/docs/security/guide#validating-pci-compliance')),
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: TextFormField(
-                      initialValue: _card.number,
-                      decoration: InputDecoration(hintText: 'Number'),
-                      onChanged: (number) {
-                        setState(() {
-                          _card = _card.copyWith(number: number);
-                        });
-                      },
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    width: 80,
-                    child: TextFormField(
-                      initialValue: _card.expirationYear.toString(),
-                      decoration: InputDecoration(hintText: 'Exp. Year'),
-                      onChanged: (number) {
-                        setState(() {
-                          _card = _card.copyWith(
-                              expirationYear: int.tryParse(number));
-                        });
-                      },
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    width: 80,
-                    child: TextFormField(
-                      initialValue: _card.expirationMonth.toString(),
-                      decoration: InputDecoration(hintText: 'Exp. Month'),
-                      onChanged: (number) {
-                        setState(() {
-                          _card = _card.copyWith(
-                              expirationMonth: int.tryParse(number));
-                        });
-                      },
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    width: 80,
-                    child: TextFormField(
-                      initialValue: _card.cvc,
-                      decoration: InputDecoration(hintText: 'CVC'),
-                      onChanged: (number) {
-                        setState(() {
-                          _card = _card.copyWith(cvc: number);
-                        });
-                      },
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            CheckboxListTile(
-              value: _saveCard,
-              onChanged: (value) {
-                setState(() {
-                  _saveCard = value;
-                });
+            ...cards.map<Widget>((CardDetails card) => GestureDetector(
+              onTap: () {
+                _handlePayPress(card);
               },
-              title: Text('Save card during payment'),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: MaterialButton(
-                onPressed: _handlePayPress,
-                child: Text('Pay'),
+              child: CreditCardWidget(
+                glassmorphismConfig:
+                useGlassMorphism ? Glassmorphism.defaultConfig() : null,
+                cardNumber: card.number.toString(),
+                expiryDate: card.expirationMonth.toString() + '/' + card.expirationYear.toString(),
+                cardHolderName: '',
+                cvvCode: card.cvc.toString(),
+                showBackView: false,
+                obscureCardNumber: true,
+                obscureCardCvv: true,
+                isHolderNameVisible: true,
+                cardBgColor: Colors.indigo,
+                isSwipeGestureEnabled: false,
+                onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
               ),
-            ),
-          ],
+            ))
+          ]
         ),
       ),
     );
   }
 }
+
+

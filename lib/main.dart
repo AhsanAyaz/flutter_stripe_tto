@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe_tto/pages/existing-cards.dart';
 import 'package:flutter_stripe_tto/pages/home.dart';
+import 'package:flutter_stripe_tto/pages/pay-with-new-card.dart';
 import 'package:flutter_stripe_tto/services/payment-service.dart';
 
 void main() {
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
       ),
       home: HomePage(),
       routes: <String, WidgetBuilder> {
-        '/existing-cards': (BuildContext context) => ExistingCardsPage(key: new Key('ExistingCardPage'))
+        '/existing-cards': (BuildContext context) => ExistingCardsPage(key: new Key('ExistingCardPage')),
+        '/pay-with-new-card': (BuildContext context) => PayWithNewCardPage(key: new Key('PayWithNewCardPage'))
       },
     );
   }
